@@ -44,8 +44,8 @@
             },
 
         series: [{data : [
-                #{list webApp.getAccomplishedWebRequest(), as:'webRequest'}
-                [${webRequest.date.getTime()} - currentTimeOffsetInMs,${webRequest.responseTime}]${webRequest_isLast?'':','}
+                #{list webApp.getWebRequestHavingResponse(), as:'webRequest'}
+                [${webRequest.date.getTime()} - currentTimeOffsetInMs,${webRequest.webResponse.time}]${webRequest_isLast?'':','}
                 #{/list}
             ]}]
         });
@@ -68,5 +68,24 @@
             </p>
         </div>
         <div id="chart" style="width:100%; height:400px;"></div>
+        <br>
+        <br>
+        <h2>Timeline</h2>
+        <ul>
+            #{list webApp.getFlaggedWebRequest(), as:'webRequest'}
+                <li>
+                    #{if !webRequest.hasError()}
+                        <span class="label label-${webRequest.webResponse?.family?.name()?.slugify()}">
+                            ${webRequest.webResponse?.code} - ${webRequest.webResponse?.status} (${webRequest.date?.format("HH:mm:ss")})
+                        </span>
+                    #{/if}
+                    #{else}
+                        <span class="label label-danger">
+                            &{'request.error.' + webRequest?.error?.name()?.toLowerCase()} (${webRequest.date?.format("HH:mm:ss")})
+                        </span>
+                    #{/else}
+                </li>
+            #{/list}
+        </ul>
     </div>
 </div>

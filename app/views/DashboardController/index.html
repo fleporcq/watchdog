@@ -1,11 +1,14 @@
 #{extends 'main.html'/}
 <div class="jumbotron">
     <div class="container">
-        <h1>Watchdog</h1>
+        <img src="@{'public/images/watchdog-logo.png'}" align="left" style="margin-right:50px;">
+        <h1>${applicationName} <small>${applicationVersion}</small></h1>
         <p>
             <a class="btn btn-primary btn-lg" href="@{WebAppController.add}"><span class="glyphicon glyphicon-plus"></span> Add application</a>
-            <a class="btn btn-success btn-lg" href="@{WebAppController.startAll}"><span class="glyphicon glyphicon-play"></span> Start all</a>
-            <a class="btn btn-warning btn-lg" href="@{WebAppController.stopAll}"><span class="glyphicon glyphicon-pause"></span> Pause all</a>
+            #{if webApps?.size() > 0}
+                <a class="btn btn-success btn-lg" href="@{WebAppController.startAll}"><span class="glyphicon glyphicon-play"></span> Start all</a>
+                <a class="btn btn-warning btn-lg" href="@{WebAppController.stopAll}"><span class="glyphicon glyphicon-pause"></span> Pause all</a>
+            #{/if}
         </p>
     </div>
 </div>
@@ -26,13 +29,13 @@
                 <p>
                     #{if webApp.isWatched()}
                         #{if !webApp.getLastWebRequest()?.hasError()}
-                            <span class="label label-${webApp.getLastWebRequest()?.responseStatusFamily?.name()?.slugify()}">
-                                ${webApp.getLastWebRequest()?.responseCode} - ${webApp.getLastWebRequest()?.responseStatus} (${webApp.getLastWebRequest()?.date?.format("HH:mm:ss")})
+                            <span class="label label-${webApp.getLastWebRequest()?.webResponse?.family?.name()?.slugify()}">
+                                ${webApp.getLastWebRequest()?.webResponse?.code} - ${webApp.getLastWebRequest()?.webResponse?.status} (${webApp.getLastWebRequest()?.date?.format("HH:mm:ss")})
                             </span>
                         #{/if}
                         #{else}
                             <span class="label label-danger">
-                                ${webApp.getLastWebRequest()?.error} (${webApp.getLastWebRequest()?.date?.format("HH:mm:ss")})
+                                &{'request.error.' + webApp.getLastWebRequest()?.error?.name()?.toLowerCase()} (${webApp.getLastWebRequest()?.date?.format("HH:mm:ss")})
                             </span>
                         #{/else}
                     #{/if}

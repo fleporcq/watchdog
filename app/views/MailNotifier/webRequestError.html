@@ -1,4 +1,4 @@
 <p>
     '${webApp.name}' webApp (<a href="${webApp.url}">${webApp.url}</a>) unreachable.<br>
-    Last request :   ${lastWebRequest?.error} (${lastWebRequest?.date?.format("HH:mm:ss")})
+    Last request :  &{'request.error.' + lastWebRequest?.error?.name()?.toLowerCase()} (${lastWebRequest?.date?.format("HH:mm:ss")})
 </p>

@@ -16,6 +16,11 @@ GET     /webapp/start/{id}/?                      WebAppController.start
 GET     /webapp/stop/{id}/?                       WebAppController.stop
 POST    /webapp/save/?                            WebAppController.save
 
+GET     /user/add/?                               UserController.add
+GET     /user/edit/{id}/?                         UserController.edit
+GET     /user/delete/{id}/?                       UserController.delete
+POST    /user/save/?                              UserController.save
+
 # Ignore favicon requests
 GET     /favicon.ico                            404
 

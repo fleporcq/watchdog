@@ -2,6 +2,7 @@ package services;
 
 import models.WebApp;
 import models.WebRequest;
+import models.WebResponse;
 import notifiers.MailNotifier;
 import play.Logger;
 
@@ -42,36 +43,33 @@ public class Watchdog implements Runnable {
 
         if (webRequest != null) {
             if (webApp.getWatchersList().size() > 0) {
-                notifyWatchersIfWebAppStateHasChanged(webRequest);
+                flagToKeepAndNotifyWatchers(webRequest);
             }
             saveWebRequest(webRequest);
         }
     }
 
-    private void notifyWatchersIfWebAppStateHasChanged(WebRequest webRequest) {
+    private void flagToKeepAndNotifyWatchers(WebRequest webRequest) {
 
         WebRequest lastWebRequest = getLastWebRequest();
 
-        if (webRequest.hasError()) {
-            if (lastWebRequest == null || !webRequest.error.equals(lastWebRequest.error)) {
-                MailNotifier.webRequestError(webApp, webRequest);
+        if (webRequest.hasNewError(lastWebRequest)) {
+            webRequest.flag();
+            MailNotifier.webRequestError(webApp, webRequest);
+        } else if (webRequest.hasNewResponseStatus(lastWebRequest)) {
+            webRequest.flag();
+            if (webRequest.webResponse.hasFailedStatus()) {
+                MailNotifier.webAppLost(webApp, webRequest);
             }
-        } else {
-            if (lastWebRequest == null || !webRequest.responseStatus.equals(lastWebRequest.responseStatus)) {
-                if (webRequest.hasFailedStatus()) {
-                    MailNotifier.webAppLost(webApp, webRequest);
-                }
-                if (webRequest.hasWarningStatus()) {
-                    MailNotifier.webAppWarn(webApp, webRequest);
-                }
+            if (webRequest.webResponse.hasWarningStatus()) {
+                MailNotifier.webAppWarn(webApp, webRequest);
             }
-            if (lastWebRequest != null && !webRequest.responseStatus.equals(lastWebRequest.responseStatus)) {
-                if (webRequest.hasSuccessfulStatus()) {
-                    MailNotifier.webAppRetrieved(webApp, webRequest);
-                }
+            if (webRequest.webResponse.hasSuccessfulStatus() && lastWebRequest != null) {
+                MailNotifier.webAppRetrieved(webApp, webRequest);
             }
         }
     }
+
 
 
     private WebRequest request() throws IOException {
@@ -86,7 +84,7 @@ public class Watchdog implements Runnable {
 
         connection.disconnect();
 
-        return new WebRequest(webApp, responseCode, endTime - startTime);
+        return new WebRequest(webApp, new WebResponse(responseCode, endTime - startTime));
     }
 
     private void saveWebRequest(WebRequest webRequest) {
@@ -111,7 +109,6 @@ public class Watchdog implements Runnable {
             EntityManagerHelper.beginTransaction();
             List<WebRequest> webRequests = em.createQuery("SELECT wr FROM WebRequest wr WHERE wr.webApp.id = :id ORDER BY wr.date DESC", WebRequest.class).setParameter("id", webApp.id).setMaxResults(1).getResultList();
             lastWebRequest = webRequests.size() > 0 ? webRequests.get(0) : null;
-            EntityManagerHelper.commit();
         } catch (Exception e) {
             Logger.error("Error selecting last webRequest for webApp (" + webApp.name + ") : " + e.getMessage());
             EntityManagerHelper.rollback();

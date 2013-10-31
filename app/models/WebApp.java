@@ -1,5 +1,6 @@
 package models;
 
+import notifiers.MailNotifier;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.*;
 import play.db.jpa.Model;
@@ -110,8 +111,12 @@ public class WebApp extends Model {
         return lastWebRequest;
     }
 
-    public List<WebRequest> getAccomplishedWebRequest(){
+    public List<WebRequest> getWebRequestHavingResponse(){
         return WebRequest.find("webApp.id = ? AND error IS NULL ORDER BY date ASC", id).fetch();
+    }
+
+    public List<WebRequest> getFlaggedWebRequest(){
+        return WebRequest.find("webApp.id = ? AND flagged = ? ORDER BY date DESC", id, true).fetch();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package models;
 
+import controllers.SecurityController;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.*;
 import play.db.jpa.Model;
@@ -54,6 +55,12 @@ public class User extends Model {
         if (StringUtils.isNotBlank(this.newPassword)) {
             this.password = Codec.hexSHA1(this.newPassword);
         }
+        User connectedUser = SecurityController.connectedUser();
+        if(connectedUser.id.equals(this.id)){
+            CachedSession cachedSession = CachedSession.current();
+            cachedSession.setUser(this);
+        }
+
         return super.save();
     }
 

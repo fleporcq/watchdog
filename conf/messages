@@ -4,3 +4,8 @@
 
 role.user = User
 role.admin = Admin
+
+request.error.unknown_host = Unknown host
+request.error.malformed_url = Malformed url
+request.error.timeout = Timeout
+request.error.unknown_error = Unknown error

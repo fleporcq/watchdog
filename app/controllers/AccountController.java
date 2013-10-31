@@ -24,8 +24,6 @@ public class AccountController extends MainController {
 
         if (!validation.hasErrors()) {
             user.save();
-            CachedSession cachedSession = CachedSession.current();
-            cachedSession.setUser(user);
             flash.success("Account successfully updated !");
             DashboardController.index();
         }

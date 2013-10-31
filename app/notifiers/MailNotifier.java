@@ -17,7 +17,7 @@ public class MailNotifier extends Mailer {
     }
 
     public static void webAppLost(WebApp webApp, WebRequest lastWebRequest) {
-        Logger.info("Sending email webApp lost : " + webApp.name + " - " + lastWebRequest.responseStatus);
+        Logger.info("Sending email webApp lost : " + webApp.name + " - " + lastWebRequest.webResponse.status);
 
         setSubject(getSubjectPrefix(webApp) + "Signal lost");
         for (String watcher : webApp.getWatchersList()) {
@@ -29,7 +29,7 @@ public class MailNotifier extends Mailer {
 
 
     public static void webAppWarn(WebApp webApp, WebRequest lastWebRequest) {
-        Logger.info("Sending email webApp warning : " + webApp.name + " - " + lastWebRequest.responseStatus);
+        Logger.info("Sending email webApp warning : " + webApp.name + " - " + lastWebRequest.webResponse.status);
 
         setSubject(getSubjectPrefix(webApp) + "Signal warning");
         for (String watcher : webApp.getWatchersList()) {
@@ -40,7 +40,7 @@ public class MailNotifier extends Mailer {
     }
 
     public static void webAppRetrieved(WebApp webApp, WebRequest lastWebRequest) {
-        Logger.info("Sending email webApp retrieved : " + webApp.name + " - " + lastWebRequest.responseStatus);
+        Logger.info("Sending email webApp retrieved : " + webApp.name + " - " + lastWebRequest.webResponse.status);
 
         setSubject(getSubjectPrefix(webApp) + "Signal retrieved");
         for (String watcher : webApp.getWatchersList()) {

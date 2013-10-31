@@ -3,10 +3,8 @@ package models;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
-import javax.ws.rs.core.Response;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 public class WebRequest extends Model {
@@ -17,28 +15,18 @@ public class WebRequest extends Model {
 
     public Date date;
 
-    //TODO : Créer un objet embedded Response
-
-    public Integer responseCode;
-
-    @Enumerated(EnumType.STRING)
-    public Response.Status responseStatus;
-
-    @Enumerated(EnumType.STRING)
-    public Response.Status.Family responseStatusFamily;
-
-    public Long responseTime;
+    @Embedded
+    public WebResponse webResponse;
 
     @Enumerated(EnumType.STRING)
     public Error error;
 
-    public WebRequest(WebApp webApp, Integer responseCode, Long responseTime) {
+    public boolean flagged;
+
+    public WebRequest(WebApp webApp, WebResponse webResponse) {
         this.webApp = webApp;
         this.date = new Date();
-        this.responseCode = responseCode;
-        this.responseStatus = getStatus(responseCode);
-        this.responseStatusFamily = getStatusFamily(responseCode);
-        this.responseTime = responseTime;
+        this.webResponse = webResponse;
     }
 
     public WebRequest(WebApp webApp, Error error) {
@@ -47,32 +35,12 @@ public class WebRequest extends Model {
         this.error = error;
     }
 
-    private Response.Status getStatus(Integer code) {
-        return code != null ? Response.Status.fromStatusCode(code) : null;
-    }
-
-    private Response.Status.Family getStatusFamily(Integer code) {
-        Response.Status status = getStatus(code);
-        return status != null ? status.getFamily() : null;
-    }
-
     public boolean hasError() {
         return error != null;
     }
 
-    public boolean hasSuccessfulStatus() {
-        return Response.Status.Family.SUCCESSFUL.equals(this.responseStatusFamily);
-    }
-
-    public boolean hasFailedStatus() {
-        return Response.Status.Family.CLIENT_ERROR.equals(this.responseStatusFamily) ||
-                Response.Status.Family.SERVER_ERROR.equals(this.responseStatusFamily);
-    }
-
-    public boolean hasWarningStatus() {
-        return Response.Status.Family.REDIRECTION.equals(this.responseStatusFamily) ||
-                Response.Status.Family.OTHER.equals(this.responseStatusFamily) ||
-                Response.Status.Family.INFORMATIONAL.equals(this.responseStatusFamily);
+    public boolean flag() {
+        return flagged = true;
     }
 
     public static WebRequest findLastWebRequestForWebApp(Long id) {
@@ -82,10 +50,19 @@ public class WebRequest extends Model {
     public static void deleteOldWebRequests(int day) {
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DATE, -day);
-        WebRequest.delete("date < ?", c.getTime());
+        WebRequest.delete("date < ? AND flagged = ?", c.getTime(), false);
     }
 
     public enum Error {
         MALFORMED_URL, UNKNOWN_HOST, TIMEOUT, UNKNOWN_ERROR
     }
+
+    public boolean hasNewError(WebRequest lastWebRequest) {
+        return this.hasError() && (lastWebRequest == null || !this.error.equals(lastWebRequest.error));
+    }
+
+    public boolean hasNewResponseStatus(WebRequest lastWebRequest) {
+        return !this.hasError() && (lastWebRequest == null || lastWebRequest.hasError() || !this.webResponse.status.equals(lastWebRequest.webResponse.status));
+    }
+
 }

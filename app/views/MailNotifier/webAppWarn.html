@@ -1,4 +1,4 @@
 <p>
     A warning alert has been launched for '${webApp.name}' webApp (<a href="${webApp.url}">${webApp.url}</a>).<br>
-    Last request :  ${lastWebRequest?.responseCode} - ${lastWebRequest.responseStatus} in ${lastWebRequest.responseTime} ms (${lastWebRequest.date.format("HH:mm:ss")})
+    Last request :  ${lastWebRequest?.webResponse?.code} - ${lastWebRequest.webResponse?.status} in ${lastWebRequest.webResponse?.time} ms (${lastWebRequest.date.format("HH:mm:ss")})
 </p>
