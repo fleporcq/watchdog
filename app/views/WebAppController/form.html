@@ -1,0 +1,60 @@
+#{extends 'main.html'/}
+<div class="container">
+    <div class="row">
+        <div class="page-header">
+            <h1>${webApp?.id ? 'Edit' : 'Add'} application</h1>
+        </div>
+        <form action="@{WebAppController.save}" method="POST" class="form-horizontal">
+            #{field 'webApp.id'}
+                <input type="hidden" name="${field.name}" value="${field.value}">
+            #{/field}
+            #{field 'webApp.name'}
+            <div class="form-group #{ifError field.name}has-error#{/ifError}">
+                <label for="${field.id}" class="col-lg-2 control-label">Name</label>
+                <div class="col-lg-4">
+                    <input type="text" class="form-control" name="${field.name}" id="${field.id}" value="${flash.get(field.name) != null ? flash.get(field.name) : field.value}">
+                    #{ifError field.name}<span class="help-block">#{error field.name /}</span>#{/ifError}
+                </div>
+            </div>
+            #{/field}
+            #{field 'webApp.url'}
+                <div class="form-group #{ifError field.name}has-error#{/ifError}">
+                    <label for="${field.id}" class="col-lg-2 control-label">URL</label>
+                    <div class="col-lg-4">
+                        <input type="text" class="form-control" name="${field.name}" id="${field.id}" value="${flash.get(field.name) != null ? flash.get(field.name) : field.value}">
+                        #{ifError field.name}<span class="help-block">#{error field.name /}</span>#{/ifError}
+                    </div>
+                </div>
+            #{/field}
+            #{field 'webApp.requestDelay'}
+                <div class="form-group #{ifError field.name}has-error#{/ifError}">
+                    <label for="${field.id}" class="col-lg-2 control-label">Request delay</label>
+                    <div class="col-lg-4">
+                        <input type="text" class="form-control" name="${field.name}" id="${field.id}" maxlength="4" value="${flash.get(field.name) != null ? flash.get(field.name) : field.value}">
+                        #{ifError field.name}<span class="help-block">#{error field.name /}</span>#{/ifError}
+                        #{else}<span class="help-block">Delay between two requests in minutes</span>#{/else}
+                    </div>
+                </div>
+            #{/field}
+            #{field 'webApp.watchers'}
+                <div class="form-group #{ifError field.name}has-error#{/ifError}">
+                    <label for="${field.id}" class="col-lg-2 control-label">Watchers</label>
+                    <div class="col-lg-4">
+                        <input type="text" class="form-control" name="${field.name}" id="${field.id}" value="${flash.get(field.name) != null ? flash.get(field.name) : field.value}">
+                        #{ifError field.name}<span class="help-block">#{error field.name /}</span>#{/ifError}
+                        #{else}<span class="help-block">Emails separated by a comma</span>#{/else}
+                    </div>
+                </div>
+            #{/field}
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-4">
+                        <a class="btn btn-default" href="@{DashboardController.index}"><span class="glyphicon glyphicon-ban-circle"></span> Cancel</a>
+                        #{if webApp?.id}
+                        <a class="btn btn-danger" href="@{WebAppController.delete(webApp.id)}"><span class="glyphicon glyphicon-remove"></span> Delete</a>
+                        #{/if}
+                        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-save"></span> Save</button>
+                    </div>
+                </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+html, body {
+    background: #FFF !important;
+}
+
+body {
+    padding-top: 50px !important;
+    padding-bottom: 20px !important;
+}
+
+.label-unknown {
+    background-color: #999999;
+}
+
+.label-successful {
+    background-color: #5cb85c;
+}
+
+
+.label-client_error,
+.label-server_error{
+    background-color: #d9534f;
+}
+
+.label-informational,
+.label-redirection,
+.label-other{
+    background-color: #f0ad4e;
+}
+
+.badge-ok {
+    background-color: #5cb85c;
+}
+
+.badge-warning {
+    background-color: #f0ad4e;
+}
+
+.badge-error {
+    background-color: #d9534f;
+}

@@ -1,0 +1,72 @@
+#{extends 'main.html'/}
+#{set 'scripts'}
+<script src="@{'public/javascripts/highcharts.js'}"></script>
+<script type="text/javascript">
+    var currentTimeOffsetInMs = new Date().getTimezoneOffset() * 60 * 1000;
+
+    $(function () {
+        $('#chart').highcharts({
+            chart: {
+                type: 'line',
+                zoomType: 'x'
+            },
+            credits: {
+                enabled: false
+            },
+            legend: {
+                enabled: false
+            },
+            title: {
+                text: 'Time responses'
+            },
+            xAxis: {
+                type: 'datetime'
+            },
+            yAxis: {
+                title: {
+                    text: 'ms'
+                }
+            },
+            plotOptions: {
+                line: {
+                    lineWidth: 1,
+                    marker: {
+                        enabled: false
+                    },
+                    shadow: false,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    },
+                    threshold: null
+                }
+            },
+
+        series: [{data : [
+                #{list webApp.getAccomplishedWebRequest(), as:'webRequest'}
+                [${webRequest.date.getTime()} - currentTimeOffsetInMs,${webRequest.responseTime}]${webRequest_isLast?'':','}
+                #{/list}
+            ]}]
+        });
+    });
+</script>
+#{/set}
+<div class="container">
+    <div class="row">
+        <div class="page-header">
+            <h1>Stats for ${webApp.name} <small><a href="${webApp.url}">${webApp.url}</a></small></h1>
+        </div>
+        <div class="col-lg-4">
+           <p>
+                #{if webApp.isWatched()}
+                    <a class="btn btn-warning" href="@{WebAppController.stop(webApp.id)}"><span class="glyphicon glyphicon-pause"></span> Pause</a>
+                #{/if}
+                #{else}
+                    <a class="btn btn-success" href="@{WebAppController.start(webApp.id)}"><span class="glyphicon glyphicon-play"></span> Start</a>
+                #{/else}
+            </p>
+        </div>
+        <div id="chart" style="width:100%; height:400px;"></div>
+    </div>
+</div>

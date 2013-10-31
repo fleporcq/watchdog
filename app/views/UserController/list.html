@@ -1,0 +1,32 @@
+#{extends 'main.html'/}
+<div class="container">
+    <div class="row">
+        <div class="page-header">
+            <h1>Users <a class="btn btn-primary" href="@{UserController.add}"><span class="glyphicon glyphicon-plus"></span> Add</a></h1>
+        </div>
+
+        #{alerts /}
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th width="200">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            #{list users, as : 'user'}
+                <tr>
+                    <td>${user.username}</td>
+                    <td>${user.role}</td>
+                    <td>
+                        <a class="btn btn-danger" href="@{UserController.delete(user.id)}"><span class="glyphicon glyphicon-remove"></span> Delete</a>
+                        <a class="btn btn-default" href="@{UserController.edit(user.id)}"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+                    </td>
+                </tr>
+            #{/list}
+            </tbody>
+        </table>
+    </div>
+</div>

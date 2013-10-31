@@ -1,0 +1,62 @@
+#{extends 'main.html'/}
+<div class="container">
+    <div class="row">
+        <div class="page-header">
+            <h1>${webApp?.id ? 'Edit' : 'Add'} user</h1>
+        </div>
+        <form action="@{UserController.save}" method="POST" class="form-horizontal">
+            #{field 'user.id'}
+                <input type="hidden" name="${field.name}" value="${field.value}">
+            #{/field}
+            #{field 'user.username'}
+                <div class="form-group #{ifError field.name}has-error#{/ifError}">
+                    <label for="${field.id}" class="col-lg-2 control-label">Username</label>
+                    <div class="col-lg-4">
+                        <input type="text" class="form-control" name="${field.name}" id="${field.id}" value="${flash.get(field.name) != null ? flash.get(field.name) : field.value}">
+                        #{ifError field.name}<span class="help-block">#{error field.name /}</span>#{/ifError}
+                    </div>
+                </div>
+            #{/field}
+            #{field 'user.newPassword'}
+                <div class="form-group #{ifError field.name}has-error#{/ifError}">
+                    <label for="${field.id}" class="col-lg-2 control-label">Password</label>
+                    <div class="col-lg-4">
+                        <input type="password" autocomplete="off" class="form-control" name="${field.name}" id="${field.id}" value="${flash.get(field.name) != null ? flash.get(field.name) : field.value}">
+                        #{ifError field.name}<span class="help-block">#{error field.name /}</span>#{/ifError}
+                    </div>
+                </div>
+            #{/field}
+            #{field 'user.passwordConfirmation'}
+                <div class="form-group #{ifError field.name}has-error#{/ifError}">
+                    <label for="${field.id}" class="col-lg-2 control-label">Password confirmation</label>
+                    <div class="col-lg-4">
+                        <input type="password" autocomplete="off" class="form-control" name="${field.name}" id="${field.id}" value="${flash.get(field.name) != null ? flash.get(field.name) : field.value}">
+                        #{ifError field.name}<span class="help-block">#{error field.name /}</span>#{/ifError}
+                    </div>
+                </div>
+            #{/field}
+            #{field 'user.role'}
+                <div class="form-group #{ifError field.name}has-error#{/ifError}">
+                    <label for="${field.id}" class="col-lg-2 control-label">Role</label>
+                    <div class="col-lg-4">
+                        <select class="form-control" name="${field.name}" id="${field.id}">
+                            <option></option>
+                        #{list models.Role, as :'role'}
+                            <option value="${role.name()}" #{if role.name() == (flash.get(field.name) != null ? flash.get(field.name) : field.value?.name())}selected="selected"#{/if}>${role}</option>
+                        #{/list}
+                        </select>
+                    </div>
+                </div>
+            #{/field}
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-4">
+                        <a class="btn btn-default" href="@{UserController.list}"><span class="glyphicon glyphicon-ban-circle"></span> Cancel</a>
+                    #{if user?.id}
+                        <a class="btn btn-danger" href="@{UserController.delete(user.id)}"><span class="glyphicon glyphicon-remove"></span> Delete</a>
+                    #{/if}
+                        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-save"></span> Save</button>
+                    </div>
+                </div>
+        </form>
+    </div>
+</div>

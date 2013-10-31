@@ -1,0 +1,46 @@
+%{String applicationName = play.Play.configuration.getProperty("application.name");}%
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>${applicationName}</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="@{'public/stylesheets/bootstrap.min.css'}" rel="stylesheet">
+
+        <!-- Custom styles for this template -->
+        <link href="@{'public/stylesheets/login.css'}" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+        <script src="@{'public/javascripts/html5shiv.js'}"></script>
+        <script src="@{'public/javascripts/respond.min.js'}"></script>
+        <![endif]-->
+    #{get 'scripts'/}
+    </head>
+
+    <body>
+
+    <div class="container">
+
+        <form action="@{authenticate()}" method="POST" class="form-signin">
+            <h2 class="form-signin-heading">${applicationName}</h2>
+        #{alerts /}
+            <input type="text" name="username" class="form-control" placeholder="Username" autofocus>
+            <input type="password" name="password" class="form-control" placeholder="Password">
+            <label class="checkbox">
+                <input type="checkbox" name="remember" id="remember" value="true" ${flash.remember ? 'checked="true"' : ''}> Remember me
+            </label>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in <span class="glyphicon glyphicon-log-in"></span></button>
+        </form>
+
+    </div> <!-- /container -->
+
+    </body>
+</html>
+
+

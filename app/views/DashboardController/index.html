@@ -1,0 +1,63 @@
+#{extends 'main.html'/}
+<div class="jumbotron">
+    <div class="container">
+        <h1>Watchdog</h1>
+        <p>
+            <a class="btn btn-primary btn-lg" href="@{WebAppController.add}"><span class="glyphicon glyphicon-plus"></span> Add application</a>
+            <a class="btn btn-success btn-lg" href="@{WebAppController.startAll}"><span class="glyphicon glyphicon-play"></span> Start all</a>
+            <a class="btn btn-warning btn-lg" href="@{WebAppController.stopAll}"><span class="glyphicon glyphicon-pause"></span> Pause all</a>
+        </p>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="row">
+
+        #{alerts /}
+
+        #{list webApps, as:'webApp'}
+            <div class="webApp col-lg-4">
+                <h2>${webApp.name}
+                    %{int watchersCount = webApp.getWatchersList().size()}%
+                    <span title="Watchers : ${watchersCount}" class="badge badge-${watchersCount > 1 ? 'ok' : watchersCount == 1 ? 'warning' : 'error'}">${watchersCount}</span>
+                </h2>
+                <small><a href="${webApp.url}">${webApp.url}</a></small>
+                <p>
+                    #{if webApp.isWatched()}
+                        #{if !webApp.getLastWebRequest()?.hasError()}
+                            <span class="label label-${webApp.getLastWebRequest()?.responseStatusFamily?.name()?.slugify()}">
+                                ${webApp.getLastWebRequest()?.responseCode} - ${webApp.getLastWebRequest()?.responseStatus} (${webApp.getLastWebRequest()?.date?.format("HH:mm:ss")})
+                            </span>
+                        #{/if}
+                        #{else}
+                            <span class="label label-danger">
+                                ${webApp.getLastWebRequest()?.error} (${webApp.getLastWebRequest()?.date?.format("HH:mm:ss")})
+                            </span>
+                        #{/else}
+                    #{/if}
+                    #{else}
+                        <span class="label label-default">Unknown</span>
+                    #{/else}
+                </p>
+                <p>
+                    <a class="btn btn-default" href="@{WebAppController.edit(webApp.id)}"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+                    <a class="btn btn-default" href="@{WebAppController.details(webApp.id)}"><span class="glyphicon glyphicon-stats"></span> Details</a>
+                    #{if webApp.isWatched()}
+                        <a class="btn btn-warning" href="@{WebAppController.stop(webApp.id)}"><span class="glyphicon glyphicon-pause"></span> Pause</a>
+                    #{/if}
+                    #{else}
+                        <a class="btn btn-success" href="@{WebAppController.start(webApp.id)}"><span class="glyphicon glyphicon-play"></span> Start</a>
+                    #{/else}
+                </p>
+            </div>
+        #{/list}
+    </div>
+
+    <hr>
+
+    <footer>
+        <p>&copy; TRSB - Etudes & Dev 2013</p>
+    </footer>
+</div>
+

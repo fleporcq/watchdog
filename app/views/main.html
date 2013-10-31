@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>${applicationName}</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="@{'public/stylesheets/bootstrap.min.css'}" rel="stylesheet">
+
+        <!-- Custom styles for this template -->
+        <link href="@{'public/stylesheets/main.css'}" rel="stylesheet">
+
+        <script src="//code.jquery.com/jquery.js"></script>
+        <script src="@{'public/javascripts/bootstrap.min.js'}"></script>
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+        <script src="@{'public/javascripts/html5shiv.js'}"></script>
+        <script src="@{'public/javascripts/respond.min.js'}"></script>
+        <![endif]-->
+        #{get 'scripts'/}
+    </head>
+
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">${applicationName}</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li #{if request.action =~ "DashboardController"}class="active"#{/if}><a href="/">Dashboard</a></li>
+                        #{secure.check 'ADMIN'}
+                            <li #{if request.action =~ "UserController"}class="active"#{/if}><a href="@{UserController.list}">Users</a></li>
+                        #{/secure.check}
+                    </ul>
+                    <p class="navbar-text pull-right">Signed in as <a class="navbar-link" href="@{AccountController.edit()}">${connectedUser?.username}</a>&nbsp;&nbsp;<a href="@{Secure.logout()}"><span class="glyphicon glyphicon-log-out"></span></a></p>
+                </div>
+            </div>
+        </div>
+
+        #{doLayout /}
+
+    </body>
+</html>
