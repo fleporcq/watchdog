@@ -108,6 +108,7 @@ public class Watchdog implements Runnable {
         try {
             EntityManagerHelper.beginTransaction();
             List<WebRequest> webRequests = em.createQuery("SELECT wr FROM WebRequest wr WHERE wr.webApp.id = :id ORDER BY wr.date DESC", WebRequest.class).setParameter("id", webApp.id).setMaxResults(1).getResultList();
+            EntityManagerHelper.commit();
             lastWebRequest = webRequests.size() > 0 ? webRequests.get(0) : null;
         } catch (Exception e) {
             Logger.error("Error selecting last webRequest for webApp (" + webApp.name + ") : " + e.getMessage());
