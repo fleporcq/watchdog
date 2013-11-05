@@ -5,8 +5,8 @@
 # Home page
 GET     /                                         DashboardController.index
 
-GET     /webapp/start/all                         WebAppController.startAll
-GET     /webapp/pause/all                         WebAppController.stopAll
+GET     /webapp/start/all/?                       WebAppController.startAll
+GET     /webapp/pause/all/?                       WebAppController.stopAll
 
 GET     /webapp/add/?                             WebAppController.add
 GET     /webapp/edit/{id}/?                       WebAppController.edit

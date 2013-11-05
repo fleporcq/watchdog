@@ -47,9 +47,9 @@ public class WebRequest extends Model {
         return WebRequest.find("webApp.id = ? ORDER BY date DESC", id).first();
     }
 
-    public static void deleteOldWebRequests(int day) {
+    public static void deleteOldWebRequests(int maxAge) {
         Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE, -day);
+        c.add(Calendar.DATE, -maxAge);
         WebRequest.delete("date < ? AND flagged = ?", c.getTime(), false);
     }
 

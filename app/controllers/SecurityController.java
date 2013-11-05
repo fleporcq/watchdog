@@ -27,15 +27,19 @@ public class SecurityController extends Secure.Security {
     }
 
     public static User connectedUser() {
-        CachedSession cachedSession = CachedSession.current();
         User user = null;
-        if (cachedSession != null) {
-            user = cachedSession.getUser();
+        if (session != null) {
+            CachedSession cachedSession = CachedSession.current();
+            if (cachedSession != null) {
+                user = cachedSession.getUser();
+            }
+            if (user == null) {
+
+                user = User.findByUsername(connected());
+                cachedSession.setUser(user);
+            }
         }
-        if (user == null) {
-            user = User.findByUsername(connected());
-            cachedSession.setUser(user);
-        }
+
         return user;
     }
 

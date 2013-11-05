@@ -34,6 +34,10 @@ public class User extends Model {
     @Enumerated(EnumType.STRING)
     public Role role;
 
+    public static Long getAdminCount() {
+        return User.count("role = ?", Role.ADMIN);
+    }
+
     public static User findByUsername(String username) {
         return User.find("username = ?", username).first();
     }
@@ -56,7 +60,7 @@ public class User extends Model {
             this.password = Codec.hexSHA1(this.newPassword);
         }
         User connectedUser = SecurityController.connectedUser();
-        if(connectedUser.id.equals(this.id)){
+        if(connectedUser != null && connectedUser.id.equals(this.id)){
             CachedSession cachedSession = CachedSession.current();
             cachedSession.setUser(this);
         }
